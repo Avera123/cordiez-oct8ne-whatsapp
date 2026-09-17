@@ -8,6 +8,13 @@ app.use(express.json());
 
 // Health check endpoint
 app.post('/whatsapp', (req, res) => {
+
+  console.info(req.body)
+  
+  getOrder('6a98623a3a29ad5ef4c786ca')
+  .then(order => console.log(order))
+  .catch(error => console.error(error.message));
+
   res.status(200).json({ status: 'UP', timestamp: new Date() });
 });
 
