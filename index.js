@@ -7,6 +7,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Health check endpoint
+app.post('/whatsapp', (req, res) => {
+  res.status(200).json({ status: 'UP', timestamp: new Date() });
+});
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', timestamp: new Date() });
 });
