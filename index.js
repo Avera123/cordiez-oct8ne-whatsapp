@@ -1,4 +1,5 @@
 import express from 'express';
+import axios from 'axios';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -7,15 +8,19 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Health check endpoint
-app.post('/whatsapp', (req, res) => {
+app.post('/whatsapp', async(req, res) => {
 
-  console.info(req.body)
-  
-  getOrder('6a98623a3a29ad5ef4c786ca')
-  .then(order => console.log(order))
-  .catch(error => console.error(error.message));
+  const order = await getOrder(orderId);
 
-  res.status(200).json({ status: 'UP', timestamp: new Date() });
+// Aquí puedes utilizar order.customer y order.items.
+const summary = {
+  id: order.id,
+  commerceId: order.commerceId,
+  status: order.status,
+  itemsCount: Array.isArray(order.items) ? order.items.length : 0,
+};
+
+return res.status(200).json({ received: true, order: summary });
 });
 
 app.get('/health', (req, res) => {
@@ -31,28 +36,24 @@ app.get('/api/v1/welcome', (req, res) => {
   .catch(error => console.error(error.message));
 });
 
+const janisApi = axios.create({
+  baseURL: process.env.JANIS_BASE_URL || 'https://oms.janisqa.in/api',
+  timeout: 15000,
+  headers: {
+    'janis-client': process.env.JANIS_CLIENT,
+    'janis-api-key': process.env.JANIS_API_KEY,
+    'janis-api-secret': process.env.JANIS_API_SECRET,
+    Accept: 'application/json',
+  },
+});
+
 async function getOrder(orderId) {
-  const response = await fetch(
-    `https://oms.janisqa.in/api/order/${encodeURIComponent(orderId)}`,
-    {
-      method: 'GET',
-      headers: {
-        'janis-client': 'lindo',
-        'janis-api-key': '4537413a-c306-446e-885b-d53d02b5a123',
-        'janis-api-secret': 'yeiVKJxdB5tviojY4uWpAiCqpfaJ2lwhAsiT3gF2cBKHMA25eLWvJar9AYoRbecr',
-        Accept: 'application/json',
-      },
-      signal: AbortSignal.timeout(15000),
-    }
+  const { data } = await janisApi.get(
+    `/order/${encodeURIComponent(orderId)}`,
+    { signal: AbortSignal.timeout(15000) }
   );
 
-  if (!response.ok) {
-    throw new Error(
-      `Error ${response.status}: ${await response.text()}`
-    );
-  }
-
-  return response.json();
+  return data;
 }
 
 // Start the server
