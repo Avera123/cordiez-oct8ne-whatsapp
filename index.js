@@ -10,7 +10,9 @@ app.use(express.json());
 // Health check endpoint
 app.post('/whatsapp', async(req, res) => {
 
-  const order = await getOrder(orderId);
+  console.info(req.body)
+
+  const order = await getOrder("6a98399e8628500bc316c836");
 
 // Aquí puedes utilizar order.customer y order.items.
 const summary = {
