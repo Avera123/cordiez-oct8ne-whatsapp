@@ -11,9 +11,8 @@ app.use(express.json());
 app.post('/whatsapp', async (req, res) => {
 
   console.info(req.body)
-  const body = JSON.parse(req.body)
 
-  const order = await getOrder(body.metadata.id);
+  const order = await getOrder(req.body.metadata.id);
 
   // Aquí puedes utilizar order.customer y order.items.
   const summary = {
