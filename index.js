@@ -8,21 +8,23 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Health check endpoint
-app.post('/whatsapp', async(req, res) => {
+app.post('/whatsapp', async (req, res) => {
 
   console.info(req.body)
 
   const order = await getOrder("6a98399e8628500bc316c836");
 
-// Aquí puedes utilizar order.customer y order.items.
-const summary = {
-  id: order.id,
-  commerceId: order.commerceId,
-  status: order.status,
-  itemsCount: Array.isArray(order.items) ? order.items.length : 0,
-};
+  // Aquí puedes utilizar order.customer y order.items.
+  const summary = {
+    id: order.id,
+    commerceId: order.commerceId,
+    status: order.status,
+    itemsCount: Array.isArray(order.items) ? order.items.length : 0,
+  };
 
-return res.status(200).json({ received: true, order: summary });
+  console.log({summary})
+  
+  return res.status(200).json({ received: true, order: summary });
 });
 
 app.get('/health', (req, res) => {
@@ -34,8 +36,8 @@ app.get('/api/v1/welcome', (req, res) => {
   res.json({ message: 'Welcome to your Node.js microservice!' });
 
   getOrder('6a98623a3a29ad5ef4c786ca')
-  .then(order => console.log(order))
-  .catch(error => console.error(error.message));
+    .then(order => console.log(order))
+    .catch(error => console.error(error.message));
 });
 
 const janisApi = axios.create({
