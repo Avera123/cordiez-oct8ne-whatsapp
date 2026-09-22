@@ -22,24 +22,112 @@ app.post('/whatsapp', async (req, res) => {
     itemsCount: Array.isArray(order.items) ? order.items.length : 0,
   };
 
-  console.log({summary})
+  //POST Candidates Status: 
+  // #1 Get Token
+  // https://cdn.microsite.janisqa.in/candidates?token={{orderData.token}}
 
-  return res.status(200).json({ received: true, order: summary });
+  const orderId = summary.commerceId ?? ''; // el id de la orden en OMS
+
+  const token = await generateCandidatesToken(orderId);
+  console.log('Token generado:', token);
+
+  const oct8neResult = await sendOct8neTemplate({
+    targetNumber: order.customer?.phone ?? '',
+    customerName: order.customer?.firstName ?? 'Cliente',
+    orderNumber: order.commerceId,
+    landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
+  });
+
+  return res.status(200).json({ received: true, order: summary, oct8neResult: oct8neResult });
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'UP', timestamp: new Date() });
+// POST Message Candidates:
+const oct8neApi = axios.create({
+  baseURL: 'https://messaging-usa-api.oct8ne.com/api/v1.0',
+  timeout: 15000,
+  headers: {
+    'x-oct8ne-token': process.env.OCT8NE_TOKEN,
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
 });
 
-// A sample resource route
-app.get('/api/v1/welcome', (req, res) => {
-  res.json({ message: 'Welcome to your Node.js microservice!' });
+const BASE_URL = 'https://public.oms.janisqa.in/api';
+async function generateCandidatesToken(orderId) {
+  const { data } = await axios.post(`${BASE_URL}/ProcessOrderWithCandidates`, {
+    orderId,
+  },
+    {
+      headers: {
+        'janis-api-key': process.env.JANIS_API_KEY,
+        'janis-api-secret': process.env.JANIS_API_SECRET,
+        'janis-client': process.env.JANIS_CLIENT,
+      },
+    });
 
-  getOrder('6a98623a3a29ad5ef4c786ca')
-    .then(order => console.log(order))
-    .catch(error => console.error(error.message));
-});
+  if (!data?.payload?.token) {
+    throw new Error(data?.payload?.message || 'No se pudo generar el token');
+  }
 
+  return data.payload.token;
+}
+
+
+async function sendOct8neTemplate({
+  targetNumber,
+  customerName,
+  orderNumber,
+  landingCandidate
+}) {
+  const payload = {
+    template: {
+      name: 'ecomm_productos_faltantes_sustitucion',
+      namespace: '37633915_9dfc_4733_8e8e_1ed01a03e8cf',
+      language: 'ES_AR',
+    },
+    targets: [
+      {
+        number: targetNumber,
+        components: [
+          {
+            type: 'body',
+            parameters: [
+              {
+                type: 'text',
+                text: customerName,
+              },
+              {
+                type: 'text',
+                text: orderNumber,
+              },
+              {
+                type: 'text',
+                text: landingCandidate
+              }
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  const { data } = await oct8neApi.post(
+    '/whatsapp/templates/21060/4/5493512364727',
+    payload,
+    {
+      params: {
+        testMode: 0,
+        campaign: 'test',
+      },
+    }
+  );
+
+  return data;
+}
+
+// TODO: Get Token URL Candidates
+
+// Get Order JANIS
 const janisApi = axios.create({
   baseURL: process.env.JANIS_BASE_URL || 'https://oms.janisqa.in/api',
   timeout: 15000,
@@ -59,6 +147,10 @@ async function getOrder(orderId) {
 
   return data;
 }
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'UP', timestamp: new Date() });
+});
 
 // Start the server
 app.listen(PORT, () => {
