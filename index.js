@@ -26,7 +26,7 @@ app.post('/whatsapp', async (req, res) => {
   // #1 Get Token
   // https://cdn.microsite.janisqa.in/candidates?token={{orderData.token}}
 
-  const orderId = summary.commerceId ?? ''; // el id de la orden en OMS
+  const orderId = req.body.metadata.id ?? ''; // el id de la orden en OMS
 
   const token = await generateCandidatesToken(orderId);
   console.log('Token generado:', token);
