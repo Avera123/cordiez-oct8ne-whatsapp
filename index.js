@@ -66,7 +66,7 @@ app.post('/whatsapp', async (req, res) => {
 
       break;
 
-    case "on way":
+    case "in-delivery":
       console.info("ENTRO EN DELIVERY")
       const oct8neResultOnWay = await sendOct8neTemplateOnWay({
         targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
