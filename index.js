@@ -94,7 +94,12 @@ app.post('/whatsapp', async (req, res) => {
   //     break;
   // }
 
-  return res.status(200).json({ received: true, order: summary });
+  return res.status(200).json(
+    { 
+      received: true, 
+      // order: summary 
+    }
+  );
 });
 
 // POST Message Candidates:
