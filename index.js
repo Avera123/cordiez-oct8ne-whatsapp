@@ -18,9 +18,9 @@ app.post('/whatsapp', async (req, res) => {
 
   console.info({ "WebHook Info": req.body });
 
-  // if(req?.body?.setup == 'true'){
-  //   return res.status(200);
-  // }
+  if(req?.body?.setup == 'true'){
+    return res.status(200);
+  }
 
   const order = await getOrder(req.body.metadata.id);
   const eventName = req.body.eventName ?? '';
