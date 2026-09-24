@@ -118,7 +118,7 @@ async function sendOct8neTemplateCandidates({
   targetNumber,
   customerName,
   orderNumber,
-  landingCandidate
+  // landingCandidate
 }) {
   const payload = {
     template: {
@@ -141,10 +141,10 @@ async function sendOct8neTemplateCandidates({
                 type: 'text',
                 text: orderNumber,
               },
-              {
-                type: 'text',
-                text: landingCandidate
-              }
+              // {
+              //   type: 'text',
+              //   text: landingCandidate
+              // }
             ],
           },
         ],
@@ -169,8 +169,8 @@ async function sendOct8neTemplateCandidates({
 // POST ON WAY ORDER
 async function sendOct8neTemplateOnWay({
   targetNumber,
-  customerName,
-  orderNumber
+  // customerName,
+  // orderNumber
 }) {
   const payload = {
     "template": {
@@ -182,19 +182,6 @@ async function sendOct8neTemplateOnWay({
       {
         "number": targetNumber,
         "components": [
-          {
-            type: 'body',
-            parameters: [
-              {
-                type: 'text',
-                text: customerName,
-              },
-              {
-                type: 'text',
-                text: orderNumber,
-              },
-            ],
-          },
         ]
       }
     ]
@@ -222,7 +209,7 @@ async function sendOct8neTemplateOnPrepare({
 }) {
   const payload = {
     "template": {
-      "name": "pedido_en_camino",
+      "name": "ecomm_pedido_en_preparacion",
       "namespace": "37633915_9dfc_4733_8e8e_1ed01a03e8cf",
       "language": "ES_AR"
     },
