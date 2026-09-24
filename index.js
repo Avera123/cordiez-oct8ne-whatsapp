@@ -22,16 +22,16 @@ app.post('/whatsapp', async (req, res) => {
     return res.status(200);
   }
 
-  const order = await getOrder(req.body.metadata.id || '');
-  const eventName = req.body.eventName ?? '';
-  const commerceId = req.body.metadata.commerceId ?? '';
+  const order = await getOrder(req?.body?.metadata?.id || '');
+  const eventName = req?.body?.eventName ?? '';
+  const commerceId = req?.body?.metadata?.commerceId ?? '';
 
-  // Aquí puedes utilizar order.customer y order.items.
+  // Aquí puedes utilizar order?.customer y order?.items.
   const summary = {
-    id: order.id || '',
+    id: order?.id || '',
     commerceId: commerceId || '',
     status: eventName || '',
-    itemsCount: Array.isArray(order.items) ? order.items.length : 0,
+    itemsCount: Array.isArray(order?.items) ? order?.items.length : 0,
   };
 
   console.info({ "Get Order Info": summary });
@@ -41,14 +41,14 @@ app.post('/whatsapp', async (req, res) => {
   // https://cdn.microsite.janisqa.in/candidates?token={{orderData.token}}
 
   //const orderId = req.body.metadata.id ?? ''; // el id de la orden en OMS
-  const token = req.body.metadata.itemsCandidatesToken ?? ''
+  const token = req?.body?.metadata?.itemsCandidatesToken ?? ''
 
   console.log('Token generado:', token);
 
   console.log({
-    targetNumber: order.customer?.phone ?? '',
-    customerName: order.customer?.firstName ?? 'Cliente',
-    orderNumber: order.commerceId ?? '',
+    targetNumber: order?.customer?.phone ?? '',
+    customerName: order?.customer?.firstName ?? 'Cliente',
+    orderNumber: order?.commerceId ?? '',
     landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
   })
 
@@ -56,9 +56,9 @@ app.post('/whatsapp', async (req, res) => {
     case "pending-candidates-confirmation":
       console.info("ENTRO EN CANDIDATOS")
       const oct8neResult = await sendOct8neTemplateCandidates({
-        targetNumber: String(order.customer?.phone).replace("+","") ?? '',
-        customerName: order.customer?.firstName ?? 'Cliente',
-        orderNumber: order.commerceId,
+        targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
+        customerName: order?.customer?.firstName ?? 'Cliente',
+        orderNumber: order?.commerceId,
         landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
       });
 
@@ -69,9 +69,9 @@ app.post('/whatsapp', async (req, res) => {
     case "on way":
       console.info("ENTRO EN DELIVERY")
       const oct8neResultOnWay = await sendOct8neTemplateOnWay({
-        targetNumber: String(order.customer?.phone).replace("+","") ?? '',
-        customerName: order.customer?.firstName ?? 'Cliente',
-        orderNumber: order.commerceId
+        targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
+        customerName: order?.customer?.firstName ?? 'Cliente',
+        orderNumber: order?.commerceId
       });
 
       console.info(oct8neResultOnWay)
@@ -81,9 +81,9 @@ app.post('/whatsapp', async (req, res) => {
     case "picking":
       console.info("ENTRO EN PREPARACION")
       const oct8neResultOnPrepare = await sendOct8neTemplateOnPrepare({
-        targetNumber: String(order.customer?.phone).replace("+","") ?? '',
-        customerName: order.customer?.firstName ?? 'Cliente',
-        orderNumber: order.commerceId
+        targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
+        customerName: order?.customer?.firstName ?? 'Cliente',
+        orderNumber: order?.commerceId
       });
 
       console.info(oct8neResultOnPrepare)
