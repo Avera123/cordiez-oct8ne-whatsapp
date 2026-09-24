@@ -18,6 +18,10 @@ app.post('/whatsapp', async (req, res) => {
 
   console.info({ "WebHook Info": req.body });
 
+  if(req?.body?.setup == 'true'){
+    return res.status(200); 
+  }
+
   const order = await getOrder(req.body.metadata.id);
   const eventName = req.body.eventName ?? '';
   const commerceId = req.body.metadata.commerceId ?? '';
@@ -86,13 +90,6 @@ app.post('/whatsapp', async (req, res) => {
     default:
       break;
   }
-
-  const oct8neResult = await sendOct8neTemplateCandidates({
-    targetNumber: order.customer?.phone ?? '',
-    customerName: order.customer?.firstName ?? 'Cliente',
-    orderNumber: order.commerceId,
-    landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
-  });
 
   return res.status(200).json({ received: true, order: summary });
 });
