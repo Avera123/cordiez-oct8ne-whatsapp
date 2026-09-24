@@ -56,7 +56,7 @@ app.post('/whatsapp', async (req, res) => {
     case "pending-candidates-confirmation":
       console.info("ENTRO EN CANDIDATOS")
       const oct8neResult = await sendOct8neTemplateCandidates({
-        targetNumber: order.customer?.phone ?? '',
+        targetNumber: String(order.customer?.phone).replace("+","") ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
         orderNumber: order.commerceId,
         landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
@@ -69,7 +69,7 @@ app.post('/whatsapp', async (req, res) => {
     case "on way":
       console.info("ENTRO EN DELIVERY")
       const oct8neResultOnWay = await sendOct8neTemplateOnWay({
-        targetNumber: order.customer?.phone ?? '',
+        targetNumber: String(order.customer?.phone).replace("+","") ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
         orderNumber: order.commerceId
       });
@@ -81,7 +81,7 @@ app.post('/whatsapp', async (req, res) => {
     case "picking":
       console.info("ENTRO EN PREPARACION")
       const oct8neResultOnPrepare = await sendOct8neTemplateOnPrepare({
-        targetNumber: order.customer?.phone ?? '',
+        targetNumber: String(order.customer?.phone).replace("+","") ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
         orderNumber: order.commerceId
       });
