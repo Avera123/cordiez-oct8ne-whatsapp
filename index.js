@@ -22,15 +22,15 @@ app.post('/whatsapp', async (req, res) => {
     return res.status(200);
   }
 
-  const order = await getOrder(req.body.metadata.id);
+  const order = await getOrder(req.body.metadata.id || '');
   const eventName = req.body.eventName ?? '';
   const commerceId = req.body.metadata.commerceId ?? '';
 
   // Aquí puedes utilizar order.customer y order.items.
   const summary = {
-    id: order.id,
-    commerceId: commerceId,
-    status: eventName,
+    id: order.id || '',
+    commerceId: commerceId || '',
+    status: eventName || '',
     itemsCount: Array.isArray(order.items) ? order.items.length : 0,
   };
 
@@ -48,7 +48,7 @@ app.post('/whatsapp', async (req, res) => {
   console.log({
     targetNumber: order.customer?.phone ?? '',
     customerName: order.customer?.firstName ?? 'Cliente',
-    orderNumber: order.commerceId,
+    orderNumber: order.commerceId ?? '',
     landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
   })
 
