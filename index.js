@@ -54,6 +54,7 @@ app.post('/whatsapp', async (req, res) => {
 
   switch (eventName) {
     case "pending-candidates-confirmation":
+      console.info("ENTRO EN CANDIDATOS")
       const oct8neResult = await sendOct8neTemplateCandidates({
         targetNumber: order.customer?.phone ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
@@ -66,6 +67,7 @@ app.post('/whatsapp', async (req, res) => {
       break;
 
     case "on way":
+      console.info("ENTRO EN DELIVERY")
       const oct8neResultOnWay = await sendOct8neTemplateOnWay({
         targetNumber: order.customer?.phone ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
@@ -77,6 +79,7 @@ app.post('/whatsapp', async (req, res) => {
       break;
 
     case "picking":
+      console.info("ENTRO EN PREPARACION")
       const oct8neResultOnPrepare = await sendOct8neTemplateOnPrepare({
         targetNumber: order.customer?.phone ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
