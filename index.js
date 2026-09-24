@@ -59,7 +59,7 @@ app.post('/whatsapp', async (req, res) => {
         targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
         customerName: order?.customer?.firstName ?? 'Cliente',
         orderNumber: order?.commerceId,
-        landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
+        landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token=' + token
       });
 
       console.info(oct8neResult)
