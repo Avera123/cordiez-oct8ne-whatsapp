@@ -52,8 +52,8 @@ app.post('/whatsapp', async (req, res) => {
     landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
   })
 
-  switch (summary.status) {
-    case "on way":
+  switch (eventName) {
+    case "pending-candidates-confirmation":
       const oct8neResult = await sendOct8neTemplateCandidates({
         targetNumber: order.customer?.phone ?? '',
         customerName: order.customer?.firstName ?? 'Cliente',
