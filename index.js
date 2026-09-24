@@ -18,86 +18,86 @@ app.post('/whatsapp', async (req, res) => {
 
   console.info({ "WebHook Info": req.body });
 
-  if(req?.body?.setup == 'true'){
-    return res.status(200);
-  }
-
-  // const order = await getOrder(req.body.metadata.id);
-  // const eventName = req.body.eventName ?? '';
-  // const commerceId = req.body.metadata.commerceId ?? '';
-
-  // // Aquí puedes utilizar order.customer y order.items.
-  // const summary = {
-  //   id: order.id,
-  //   commerceId: commerceId,
-  //   status: eventName,
-  //   itemsCount: Array.isArray(order.items) ? order.items.length : 0,
-  // };
-
-  // console.info({ "Get Order Info": summary });
-
-  // //POST Candidates Status: 
-  // // #1 Get Token
-  // // https://cdn.microsite.janisqa.in/candidates?token={{orderData.token}}
-
-  // //const orderId = req.body.metadata.id ?? ''; // el id de la orden en OMS
-  // const token = req.body.metadata.itemsCandidatesToken ?? ''
-
-  // console.log('Token generado:', token);
-
-  // console.log({
-  //   targetNumber: order.customer?.phone ?? '',
-  //   customerName: order.customer?.firstName ?? 'Cliente',
-  //   orderNumber: order.commerceId,
-  //   landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
-  // })
-
-  // switch (eventName) {
-  //   case "pending-candidates-confirmation":
-  //     console.info("ENTRO EN CANDIDATOS")
-  //     const oct8neResult = await sendOct8neTemplateCandidates({
-  //       targetNumber: order.customer?.phone ?? '',
-  //       customerName: order.customer?.firstName ?? 'Cliente',
-  //       orderNumber: order.commerceId,
-  //       landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
-  //     });
-
-  //     console.info(oct8neResult)
-
-  //     break;
-
-  //   case "on way":
-  //     console.info("ENTRO EN DELIVERY")
-  //     const oct8neResultOnWay = await sendOct8neTemplateOnWay({
-  //       targetNumber: order.customer?.phone ?? '',
-  //       customerName: order.customer?.firstName ?? 'Cliente',
-  //       orderNumber: order.commerceId
-  //     });
-
-  //     console.info(oct8neResultOnWay)
-
-  //     break;
-
-  //   case "picking":
-  //     console.info("ENTRO EN PREPARACION")
-  //     const oct8neResultOnPrepare = await sendOct8neTemplateOnPrepare({
-  //       targetNumber: order.customer?.phone ?? '',
-  //       customerName: order.customer?.firstName ?? 'Cliente',
-  //       orderNumber: order.commerceId
-  //     });
-
-  //     console.info(oct8neResultOnPrepare)
-
-  //     break;
-
-  //   default:
-  //     break;
+  // if(req?.body?.setup == 'true'){
+  //   return res.status(200);
   // }
+
+  const order = await getOrder(req.body.metadata.id);
+  const eventName = req.body.eventName ?? '';
+  const commerceId = req.body.metadata.commerceId ?? '';
+
+  // Aquí puedes utilizar order.customer y order.items.
+  const summary = {
+    id: order.id,
+    commerceId: commerceId,
+    status: eventName,
+    itemsCount: Array.isArray(order.items) ? order.items.length : 0,
+  };
+
+  console.info({ "Get Order Info": summary });
+
+  //POST Candidates Status: 
+  // #1 Get Token
+  // https://cdn.microsite.janisqa.in/candidates?token={{orderData.token}}
+
+  //const orderId = req.body.metadata.id ?? ''; // el id de la orden en OMS
+  const token = req.body.metadata.itemsCandidatesToken ?? ''
+
+  console.log('Token generado:', token);
+
+  console.log({
+    targetNumber: order.customer?.phone ?? '',
+    customerName: order.customer?.firstName ?? 'Cliente',
+    orderNumber: order.commerceId,
+    landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
+  })
+
+  switch (eventName) {
+    case "pending-candidates-confirmation":
+      console.info("ENTRO EN CANDIDATOS")
+      const oct8neResult = await sendOct8neTemplateCandidates({
+        targetNumber: order.customer?.phone ?? '',
+        customerName: order.customer?.firstName ?? 'Cliente',
+        orderNumber: order.commerceId,
+        landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
+      });
+
+      console.info(oct8neResult)
+
+      break;
+
+    case "on way":
+      console.info("ENTRO EN DELIVERY")
+      const oct8neResultOnWay = await sendOct8neTemplateOnWay({
+        targetNumber: order.customer?.phone ?? '',
+        customerName: order.customer?.firstName ?? 'Cliente',
+        orderNumber: order.commerceId
+      });
+
+      console.info(oct8neResultOnWay)
+
+      break;
+
+    case "picking":
+      console.info("ENTRO EN PREPARACION")
+      const oct8neResultOnPrepare = await sendOct8neTemplateOnPrepare({
+        targetNumber: order.customer?.phone ?? '',
+        customerName: order.customer?.firstName ?? 'Cliente',
+        orderNumber: order.commerceId
+      });
+
+      console.info(oct8neResultOnPrepare)
+
+      break;
+
+    default:
+      break;
+  }
 
   return res.status(200).json(
     { 
       received: true, 
-      // order: summary 
+      order: summary 
     }
   );
 });
