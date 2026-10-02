@@ -1,11 +1,11 @@
 import express from 'express';
 import axios from 'axios';
 
-const JANIS_API_KEY="b1693a65-794e-41a7-9bff-1811d4601f7d"
-const JANIS_API_SECRET="4t63TSxARBqARzuQ4zJaNU8yNo2PKzsq6o4IOgSSqdTTsxGbFmvsR8yY2txxGOxJ"
-const JANIS_BASE_URL="https://oms.janisqa.in/api"
-const JANIS_CLIENT="lindo"
-const OCT8NE_TOKEN="4F8C6DDC4B9B48228C81738991A79DD5"
+const JANIS_API_KEY = "b1693a65-794e-41a7-9bff-1811d4601f7d"
+const JANIS_API_SECRET = "4t63TSxARBqARzuQ4zJaNU8yNo2PKzsq6o4IOgSSqdTTsxGbFmvsR8yY2txxGOxJ"
+const JANIS_BASE_URL = "https://oms.janisqa.in/api"
+const JANIS_CLIENT = "lindo"
+const OCT8NE_TOKEN = "4F8C6DDC4B9B48228C81738991A79DD5"
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +18,7 @@ app.post('/whatsapp', async (req, res) => {
 
   console.info({ "WebHook Info": req.body });
 
-  if(req?.body?.setup == 'true'){
+  if (req?.body?.setup == 'true') {
     return res.status(200);
   }
 
@@ -49,17 +49,17 @@ app.post('/whatsapp', async (req, res) => {
     targetNumber: order?.customer?.phone ?? '',
     customerName: order?.customer?.firstName ?? 'Cliente',
     orderNumber: order?.commerceId ?? '',
-    landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token={{' + token + '}}'
+    landingCandidate: token,
   })
 
   switch (eventName) {
     case "pending-candidates-confirmation":
       console.info("ENTRO EN CANDIDATOS")
       const oct8neResult = await sendOct8neTemplateCandidates({
-        targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
+        targetNumber: String(order?.customer?.phone).replace("+", "") ?? '',
         customerName: order?.customer?.firstName ?? 'Cliente',
         orderNumber: order?.commerceId,
-        landingCandidate: 'https://cdn.microsite.janisqa.in/candidates?token=' + token
+        landingCandidate: token
       });
 
       console.info(oct8neResult)
@@ -69,7 +69,7 @@ app.post('/whatsapp', async (req, res) => {
     case "in-delivery":
       console.info("ENTRO EN DELIVERY")
       const oct8neResultOnWay = await sendOct8neTemplateOnWay({
-        targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
+        targetNumber: String(order?.customer?.phone).replace("+", "") ?? '',
         customerName: order?.customer?.firstName ?? 'Cliente',
         orderNumber: order?.commerceId
       });
@@ -81,7 +81,7 @@ app.post('/whatsapp', async (req, res) => {
     case "picking":
       console.info("ENTRO EN PREPARACION")
       const oct8neResultOnPrepare = await sendOct8neTemplateOnPrepare({
-        targetNumber: String(order?.customer?.phone).replace("+","") ?? '',
+        targetNumber: String(order?.customer?.phone).replace("+", "") ?? '',
         customerName: order?.customer?.firstName ?? 'Cliente',
         orderNumber: order?.commerceId
       });
@@ -95,9 +95,9 @@ app.post('/whatsapp', async (req, res) => {
   }
 
   return res.status(200).json(
-    { 
-      received: true, 
-      order: summary 
+    {
+      received: true,
+      order: summary
     }
   );
 });
@@ -118,11 +118,11 @@ async function sendOct8neTemplateCandidates({
   targetNumber,
   customerName,
   orderNumber,
-  // landingCandidate
+  landingCandidate
 }) {
   const payload = {
     template: {
-      name: 'ecomm_productos_faltantes_sustitucion',
+      name: 'ecomm_productos_faltantes_sustitucion_4',
       namespace: '37633915_9dfc_4733_8e8e_1ed01a03e8cf',
       language: 'ES_AR',
     },
@@ -141,12 +141,20 @@ async function sendOct8neTemplateCandidates({
                 type: 'text',
                 text: orderNumber,
               },
-              // {
-              //   type: 'text',
-              //   text: landingCandidate
-              // }
             ],
           },
+          {
+            "type": "button",
+            "parameters": [
+              {
+                type: "text",
+                text: landingCandidate
+              }
+            ],
+            "sub_type": "url",
+            "index": 0
+          }
+
         ],
       },
     ],
