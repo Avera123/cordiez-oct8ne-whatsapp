@@ -122,7 +122,7 @@ async function sendOct8neTemplateCandidates({
 }) {
   const payload = {
     template: {
-      name: 'ecomm_productos_faltantes_sustitucion_4',
+      name: 'ecomm_sustitucion',
       namespace: '37633915_9dfc_4733_8e8e_1ed01a03e8cf',
       language: 'ES_AR',
     },
