@@ -1,9 +1,9 @@
 import express from 'express';
 import axios from 'axios';
 
-const JANIS_API_KEY = "b1693a65-794e-41a7-9bff-1811d4601f7d"
-const JANIS_API_SECRET = "4t63TSxARBqARzuQ4zJaNU8yNo2PKzsq6o4IOgSSqdTTsxGbFmvsR8yY2txxGOxJ"
-const JANIS_BASE_URL = "https://oms.janisqa.in/api"
+const JANIS_API_KEY = "d759e64a-86b1-4fe2-b342-ba50b612fb56"
+const JANIS_API_SECRET = "ZVVbbN9UUK3MpwNmjbhg6ZPd55NSYq5OyDpJYI1StQjhrmFFVG2FV9EGMd6yJbHz"
+const JANIS_BASE_URL = "https://oms.janis.in/api"
 const JANIS_CLIENT = "lindo"
 const OCT8NE_TOKEN = "4F8C6DDC4B9B48228C81738991A79DD5"
 
