@@ -38,7 +38,7 @@ app.post('/whatsapp', async (req, res) => {
 
   //POST Candidates Status: 
   // #1 Get Token
-  // https://cdn.microsite.janisqa.in/candidates?token={{orderData.token}}
+  // https://cdn.microsite.janis.in/candidates?token={{orderData.token}}
 
   //const orderId = req.body.metadata.id ?? ''; // el id de la orden en OMS
   const token = req?.body?.metadata?.itemsCandidatesToken ?? ''
@@ -270,12 +270,25 @@ const janisApi = axios.create({
 });
 
 async function getOrder(orderId) {
-  const { data } = await janisApi.get(
-    `/order/${encodeURIComponent(orderId)}`,
-    { signal: AbortSignal.timeout(15000) }
-  );
+  try {
+    // La llamada Axios que está en la línea 273
+    const { data } = await janisApi.get(
+      `/order/${encodeURIComponent(orderId)}`,
+      { signal: AbortSignal.timeout(15000) }
+    );
 
-  return data;
+    return data;
+  } catch (error) {
+    console.error("Error en getOrder:", {
+      status: error.response?.status,
+      url: error.config?.url,
+      method: error.config?.method,
+      response: error.response?.data,
+      // No registres headers ni tokens
+    });
+
+    throw error;
+  }
 }
 
 app.get('/health', (req, res) => {
